@@ -215,7 +215,7 @@ public class WindDataImpl implements WindDataAPI {
 	}
 
 	@Override
-	public Response addTempratureDataTags(Body bodyMessage) {
+	public void addTempratureDataTags(Body bodyMessage) {
 		DatapointsIngestion dpIngestion = new DatapointsIngestion();
 		dpIngestion.setMessageId(String.valueOf(System.currentTimeMillis()));
 
@@ -234,7 +234,6 @@ public class WindDataImpl implements WindDataAPI {
 
 		dpIngestion.setBody(bodies);
 		this.timeseriesClient.postDataToTimeseriesWebsocket(dpIngestion);
-		return handleResult("Success");
 	}
 
 	@SuppressWarnings({})

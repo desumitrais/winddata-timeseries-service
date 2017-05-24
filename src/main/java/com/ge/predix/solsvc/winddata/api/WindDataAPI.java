@@ -79,6 +79,6 @@ public interface WindDataAPI
     @POST
     @Path("/temperature")
     @ApiOperation(value ="/temperature")
-    public Response addTempratureDataTags(@RequestBody Body bodyMessage);
+    public void addTempratureDataTags(@RequestBody Body bodyMessage);
 
 }
