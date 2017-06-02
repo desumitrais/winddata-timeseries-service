@@ -236,6 +236,31 @@ public class WindDataImpl implements WindDataAPI {
 		this.timeseriesClient.postDataToTimeseriesWebsocket(dpIngestion);
 	}
 
+	@SuppressWarnings("nls")
+	@Override
+	public Response getTempratureByTags(String id, String startDate, String endDate) {
+		try {
+			if (id == null) {
+				return null;
+			}
+
+			List<Header> headers = generateHeaders();
+
+			DatapointsQuery dpQuery = buildRangeDatapointsQueryRequest(id, startDate, endDate);
+			DatapointsResponse response = this.timeseriesClient.queryForDatapoints(dpQuery, headers);
+			log.debug(response.toString());
+			return handleResult(response);
+		} catch (Throwable e) {
+			log.error("unable to get wind data, config=" + this.timeseriesConfig, e);
+			// This is sample code so we need to easily show you what went
+			// wrong, please convert your app to show appropriate info to end
+			// users. For security
+			// reasons do not expose these properties.
+			throw new RuntimeException(
+					"unable to get wind data, errorMsg=" + e.getMessage() + ". config=" + this.timeseriesConfig, e);
+		}
+	}
+
 	@SuppressWarnings({})
 	private List<Header> generateHeaders() {
 		List<Header> headers = this.restClient.getSecureTokenForClientId();
@@ -275,6 +300,26 @@ public class WindDataImpl implements WindDataAPI {
 			tag.setName(entryTag);
 			tag.setLimit(taglimit);
 			tag.setOrder(tagorder);
+			tags.add(tag);
+		}
+		datapointsQuery.setTags(tags);
+		return datapointsQuery;
+	}
+
+	private DatapointsQuery buildRangeDatapointsQueryRequest(String id, String startDate, String endDate) {
+		DatapointsQuery datapointsQuery = new DatapointsQuery();
+		List<com.ge.predix.entity.timeseries.datapoints.queryrequest.Tag> tags = new ArrayList<com.ge.predix.entity.timeseries.datapoints.queryrequest.Tag>();
+		datapointsQuery.setStart(startDate);
+		datapointsQuery.setEnd(endDate);
+		// datapointsQuery.setStart("1y-ago"); //$NON-NLS-1$
+		String[] tagArray = id.split(","); //$NON-NLS-1$
+		List<String> entryTags = Arrays.asList(tagArray);
+
+		for (String entryTag : entryTags) {
+			com.ge.predix.entity.timeseries.datapoints.queryrequest.Tag tag = new com.ge.predix.entity.timeseries.datapoints.queryrequest.Tag();
+			tag.setName(entryTag);
+//			tag.setLimit(taglimit);
+//			tag.setOrder(tagorder);
 			tags.add(tag);
 		}
 		datapointsQuery.setTags(tags);

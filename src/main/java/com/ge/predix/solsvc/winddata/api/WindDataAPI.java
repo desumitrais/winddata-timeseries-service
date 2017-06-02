@@ -81,4 +81,9 @@ public interface WindDataAPI
     @ApiOperation(value ="/temperature")
     public void addTempratureDataTags(@RequestBody Body bodyMessage);
 
+    @GET
+    @Path("/temperature")
+    @ApiOperation(value ="/temperature")
+    public Response getTempratureByTags(@QueryParam("id") String id, @QueryParam("startDate") String startDate, @QueryParam("endDate") String endDate);
+
 }
