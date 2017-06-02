@@ -17,6 +17,7 @@ import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.MutablePropertySources;
@@ -73,6 +74,7 @@ import org.springframework.web.context.support.StandardServletEnvironment;
         //Add any configuration loading call you want to exclude
         
 })
+@ComponentScan(basePackages = {"com.ge.predix.solsvc.boot"})
 @PropertySource("classpath:application-default.properties")
 @ImportResource(
 {
