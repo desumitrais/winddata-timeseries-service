@@ -4,6 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import com.ge.predix.entity.timeseries.datapoints.ingestionrequest.Body;
+import com.ge.predix.solsvc.common.ArduinoWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,7 +80,7 @@ public interface WindDataAPI
     @POST
     @Path("/temperature")
     @ApiOperation(value ="/temperature")
-    public void addTempratureDataTags(@RequestBody Body bodyMessage);
+    public void addTempratureDataTags(@RequestBody ArduinoWrapper bodyMessage);
 
     @GET
     @Path("/temperature")

@@ -12,6 +12,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import com.ge.predix.solsvc.common.ArduinoWrapper;
+import com.ge.predix.solsvc.common.PredixConstantsIntf;
 import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,7 @@ import com.ge.predix.solsvc.winddata.api.WindDataAPI;
  * 2. in SecondaryTimeseriesConfig uncomment the @Component
  * 3. in src/main/resources/application-cloud.properties uncomment the props for Option 1 or 2
  * 4. in manifest.yml uncomment and fill in the properties for Option 1 or 2
- * 
+ *
  * @author predix -
  */
 @Component
@@ -112,7 +114,7 @@ public class WindDataImpl implements WindDataAPI {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.ge.predix.solsvc.api.WindDataAPI#getWindDataTags()
 	 */
 	@SuppressWarnings("nls")
@@ -172,7 +174,7 @@ public class WindDataImpl implements WindDataAPI {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param s
 	 *            -
 	 * @return
@@ -215,13 +217,22 @@ public class WindDataImpl implements WindDataAPI {
 	}
 
 	@Override
-	public void addTempratureDataTags(Body bodyMessage) {
+	public void addTempratureDataTags(ArduinoWrapper bodyMessage) {
 		DatapointsIngestion dpIngestion = new DatapointsIngestion();
 		dpIngestion.setMessageId(String.valueOf(System.currentTimeMillis()));
 
 		Body body = new Body();
 		body.setName(bodyMessage.getName());
-		body.setDatapoints(bodyMessage.getDatapoints());
+
+		List<Object> datapoint = new ArrayList<Object>();
+		datapoint.add(System.currentTimeMillis());
+		datapoint.add(bodyMessage.getTemperature() + "|" + bodyMessage.getHumidity());
+		datapoint.add(PredixConstantsIntf.TimeSeriesQuality.GOOD_QUALITY);
+
+		List<Object> datapoints = new ArrayList<Object>();
+		datapoints.add(datapoint);
+
+		body.setDatapoints(datapoints);
 
 		com.ge.predix.entity.util.map.Map map = new com.ge.predix.entity.util.map.Map();
 		map.put("host", "server1"); //$NON-NLS-2$
@@ -280,7 +291,7 @@ public class WindDataImpl implements WindDataAPI {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param id
 	 * @param startDuration
 	 * @param tagorder
